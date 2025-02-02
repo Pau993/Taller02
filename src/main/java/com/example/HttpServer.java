@@ -58,6 +58,9 @@ public class HttpServer {
             String method = requestParts[0]; // GET, POST, PUT, DELETE, etc. Metodos que se están invocando
             String path = requestParts[1]; // Ruta del recurso solicitado
             System.out.println(path);
+
+            
+
             if (method.equals("GET") && !primeraPeticion) {
                 serveStaticFile(path, out, dataOut, bos);
                 } else if (primeraPeticion){
@@ -71,7 +74,7 @@ public class HttpServer {
     }
 
     /**
-     * 
+     * // Sirve un archivo estático al cliente.
      * @param path
      * @param out
      * @param dataOut
@@ -93,7 +96,7 @@ public class HttpServer {
         if (file.exists() && !file.isDirectory()) {
             String contentType = Files.probeContentType(file.toPath());
             System.out.println(contentType);
-            if(contentType.equals("image/,jpeg") ){
+            
                 byte[] fileData = Files.readAllBytes(file.toPath());
     
                 out.println("HTTP/1.1 200 OK");
@@ -104,25 +107,15 @@ public class HttpServer {
     
                 dataOut.write(fileData, 0, fileData.length);
                 dataOut.flush();
-            }
+            
 
-            byte[] fileData = Files.readAllBytes(file.toPath());
-
-            out.println("HTTP/1.1 200 OK");
-            out.println("Content-Type: " + contentType);
-            out.println("Content-Length: " + fileData.length);
-            out.println();
-            out.flush();
-
-            dataOut.write(fileData, 0, fileData.length);
-            dataOut.flush();
         } else {
             sendResponse(out, 404, "Not Found", "Archivo no encontrado.");
         }
     }
 
     /**
-     * 
+     * // Maneja una solicitud a la API.
      * @param path
      * @param out
      */
@@ -137,6 +130,11 @@ public class HttpServer {
         }
     }
 
+    /**
+     * // Obtiene los parámetros de una solicitud.
+     * @param path
+     * @return
+     */
     static String[] getParams(String path) {
         String[] parts = path.split("\\?");
         if (parts.length == 1) return new String[0];
@@ -144,7 +142,7 @@ public class HttpServer {
     }
 
     /**
-     * 
+     * // Maneja una solicitud POST a la API.
      * @param path
      * @param in
      * @param out
@@ -163,9 +161,10 @@ public class HttpServer {
             sendResponse(out, 404, "Not Found", "{\"error\": \"Recurso no encontrado\"}");
         }
     }
+    
 
     /**
-     * 
+     * // Envía una respuesta HTTP al cliente.
      * @param out
      * @param statusCode
      * @param statusMessage

@@ -135,13 +135,22 @@
                 let nameVar = document.getElementById("name").value;
                 const xhttp = new XMLHttpRequest();
                 xhttp.onload = function() {
-                    document.getElementById("getrespmsg").innerHTML =
-                    this.responseText;
+                    const contentType = xhttp.getResponseHeader("Content-Type");
+                    if (contentType.startsWith("image/")) {
+                        const blob = new Blob([this.response], { type: contentType });
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(blob);
+                        document.getElementById("getrespmsg").innerHTML = '';
+                        document.getElementById("getrespmsg").appendChild(img);
+                    } else {
+                        const text = new TextDecoder("utf-8").decode(this.response);
+                        document.getElementById("getrespmsg").innerHTML = text;
+                    }
                 }
-                xhttp.open("GET", "/hello?name="+nameVar);
+                xhttp.open("GET", "/hello?name=" + nameVar);
+                xhttp.responseType = 'arraybuffer'; // Set the response type to arraybuffer for binary data
                 xhttp.send();
             }
         </script>
-
     </body>
 </html>
