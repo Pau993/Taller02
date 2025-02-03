@@ -13,19 +13,15 @@ import java.awt.image.BufferedImage;
 
 public class HttpServer {
     private static boolean primeraPeticion = true;
-    private static final int PORT = 35000;
+    private static int PORT = 35000;
     private static final String BASE_DIRECTORY = "src/main/resources/Files";
+    public static final Utils staticFiles = new Utils();
+    static ArrayList<Path> paths = new ArrayList<>();
+    static Map<String, Route> routes = new HashMap<>();
 
-    public static void main(String[] args) throws Exception {
+    public HttpServer() throws Exception {
         ServerSocket serverSocket = new ServerSocket(PORT);
         System.out.println("Servidor iniciado en el puerto " + PORT);
-        try {
-            BufferedImage image = ImageIO.read(new File(BASE_DIRECTORY + "/imagen.jpg"));
-            ImageIO.write(image, "jpg", new File(BASE_DIRECTORY + "/imagen.jpg"));
-        
-        } catch (IOException e) {
-            System.err.println("Error al cargar la imagen: " + e.getMessage());
-        }
 
         //Escucha simultaneamente por puerto
         while (true) {
@@ -47,8 +43,6 @@ public class HttpServer {
              BufferedOutputStream bos = new BufferedOutputStream(clientSocket.getOutputStream());
              OutputStream dataOut = clientSocket.getOutputStream();
         ) {
-
-
             //Valor de cada invocación de BufferedReader
             String requestLine = in.readLine();
             if (requestLine == null || requestLine.isEmpty()) return;
@@ -161,7 +155,7 @@ public class HttpServer {
             sendResponse(out, 404, "Not Found", "{\"error\": \"Recurso no encontrado\"}");
         }
     }
-    
+
 
     /**
      * // Envía una respuesta HTTP al cliente.
@@ -176,6 +170,14 @@ public class HttpServer {
         out.println("Content-Length: " + body.length());
         out.println();
         out.println(body);
+    }
+
+    public static void port(int port) {
+        PORT = port;
+    }
+
+    public static void get(String path, Route route){
+        paths.add(Paths.get(path));
     }
 
 }
