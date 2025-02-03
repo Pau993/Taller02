@@ -1,4 +1,4 @@
-# Servidor Web con Soporte para Múltiples Solicitudes No Concurrentes
+# Desarrollo de marcos web para servicios REST y gestión de archivos estáticos
 
 En este taller, exploraremos el funcionamiento de un servidor web capaz de manejar múltiples solicitudes de forma secuencial (no concurrente). El servidor leerá archivos desde el disco local y responderá con cualquier archivo solicitado, incluyendo:
 
@@ -64,9 +64,9 @@ Las siguientes instrucciones le permitirán obtener una copia del proyecto en fu
 Realice los siguientes pasos para clonar el proyecto en su máquina local.
 
 ```
-git clone https://github.com/Pau993/Taller01.git
-cd Taller01
-git checkout Taller01
+git clone https://github.com/Pau993/Taller02.git
+cd Taller02
+git checkout Taller02
 mvn clean compile
 ```
 
