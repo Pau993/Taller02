@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 /**
- *   @author Paula Paez
+ *   @author Paula Paez 
  */
 
 public class HttpServer {
@@ -16,9 +16,13 @@ public class HttpServer {
     private static int PORT = 35000;
     private static final String BASE_DIRECTORY = "src/main/resources/Files";
     public static final Utils staticFiles = new Utils();
-    static ArrayList<Path> paths = new ArrayList<>();
+
     static Map<String, Route> routes = new HashMap<>();
 
+    /**
+     * Constructor de la clase HttpServer
+     * @throws Exception
+     */
     public HttpServer() throws Exception {
         ServerSocket serverSocket = new ServerSocket(PORT);
         System.out.println("Servidor iniciado en el puerto " + PORT);
@@ -35,7 +39,7 @@ public class HttpServer {
 
     /**
      * Este método maneja la solicitud HTTP recibida y envía una respuesta al cliente.
-     * @param clientSocket
+     * @param clientSocket es el socket del cliente que realiza la solicitud
      */
     static void handleRequest(Socket clientSocket) {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -53,8 +57,6 @@ public class HttpServer {
             String path = requestParts[1]; // Ruta del recurso solicitado
             System.out.println(path);
 
-            
-
             if (method.equals("GET") && !primeraPeticion) {
                 serveStaticFile(path, out, dataOut, bos);
                 } else if (primeraPeticion){
@@ -69,14 +71,14 @@ public class HttpServer {
 
     /**
      * // Sirve un archivo estático al cliente.
-     * @param path
-     * @param out
-     * @param dataOut
-     * @throws IOException
+     * @param path es la ruta del recurso solicitado
+     * @param out es el flujo de salida para enviar la respuesta HTTP
+     * @param dataOut es el flujo de salida para enviar los datos del archivo
+     * @throws IOException es una excepción que se lanza si ocurre un error de entrada/salida
      */
     private static void serveStaticFile(String path, PrintWriter out, OutputStream dataOut, BufferedOutputStream bos) throws IOException {
 
-
+        //Se obtiene el valor de la variable almacenar
         String almacenar = URI.create(path).getQuery();
         if(almacenar != null){
             path = "/" + almacenar.split("=")[1];
@@ -158,7 +160,7 @@ public class HttpServer {
 
 
     /**
-     * // Envía una respuesta HTTP al cliente.
+     * Envía una respuesta HTTP al cliente.
      * @param out
      * @param statusCode
      * @param statusMessage
@@ -172,12 +174,21 @@ public class HttpServer {
         out.println(body);
     }
 
+    /**
+     * Establece el puerto en el que escuchará el servidor.
+     * @param port
+     */
     public static void port(int port) {
         PORT = port;
     }
 
+    /**
+     * Registra una ruta en el servidor.
+     * @param path
+     * @param route
+     */
     public static void get(String path, Route route){
-        paths.add(Paths.get(path));
+        routes.put(path, route);
     }
 
 }
