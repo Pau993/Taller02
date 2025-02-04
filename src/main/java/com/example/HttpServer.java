@@ -4,8 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.file.*;
 import java.util.*;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+
 
 /**
  *   @author Paula Paez 
@@ -17,13 +16,19 @@ public class HttpServer {
     private static final String BASE_DIRECTORY = "src/main/resources/Files";
     public static final Utils staticFiles = new Utils();
 
-    static Map<String, Route> routes = new HashMap<>();
+    // String que almacena la ruta de los archivos Controlador
+    // Route es una interfaz funcional que se utiliza para manejar las rutas Respuesta
+    static Map<String, Route> routes = new HashMap<>(); // Rutas registradas en el servidor
 
     /**
      * Constructor de la clase HttpServer
      * @throws Exception
      */
-    public HttpServer() throws Exception {
+    public HttpServer(){
+        
+    }
+
+    public static void run() throws IOException {
         ServerSocket serverSocket = new ServerSocket(PORT);
         System.out.println("Servidor iniciado en el puerto " + PORT);
 
@@ -77,7 +82,7 @@ public class HttpServer {
      * @throws IOException es una excepción que se lanza si ocurre un error de entrada/salida
      */
     private static void serveStaticFile(String path, PrintWriter out, OutputStream dataOut, BufferedOutputStream bos) throws IOException {
-
+        System.out.println(routes.keySet().toString());
         //Se obtiene el valor de la variable almacenar
         String almacenar = URI.create(path).getQuery();
         if(almacenar != null){
@@ -89,7 +94,25 @@ public class HttpServer {
         File file = new File(filePath);
         System.out.println(filePath);
 
-        if (file.exists() && !file.isDirectory()) {
+        Response response = new Response();
+        Request request = new Request(almacenar);
+        System.out.println(request.toString());
+        if (routes.containsKey(path)) {
+            Route responseString = routes.get(path);
+            String responseValue = "";
+            try {
+                 responseValue = responseString.handle(request, response).toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+                out.println("HTTP/1.1 200 OK");
+                out.println("Content-Type: text/plain");
+                out.println();
+                out.println(responseValue);
+                out.flush();
+    
+        }else if (file.exists() && !file.isDirectory() && !routes.containsKey(path)) {
             String contentType = Files.probeContentType(file.toPath());
             System.out.println(contentType);
             
@@ -98,13 +121,11 @@ public class HttpServer {
                 out.println("HTTP/1.1 200 OK");
                 out.println("Content-Type: " + contentType);
                 out.println("Content-Length: " + fileData.length);
-                out.println();
+               out.println();
                 out.flush();
     
                 dataOut.write(fileData, 0, fileData.length);
                 dataOut.flush();
-            
-
         } else {
             sendResponse(out, 404, "Not Found", "Archivo no encontrado.");
         }

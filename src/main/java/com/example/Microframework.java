@@ -11,6 +11,8 @@ public class Microframework {
             server.port(35000);
             staticFiles.location("/static"); // Establecer la ubicación de los archivos estáticos
             server.get("/hello", (req, res) -> "Hello World"); // Crear una ruta
+            server.get("/pi", (req, res) -> { return String.valueOf(Math.PI);}); // Crear una ruta con parámetros
+            run(); // Iniciar el servidor
         } catch (Exception e) {
             System.out.println("Error al iniciar el servidor: " + e.getMessage());
         }

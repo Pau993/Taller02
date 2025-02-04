@@ -13,6 +13,12 @@ public class Request {
         this.queryParams = queryParams;
     }
 
+    @Override
+    public String toString() {
+        return "Request [queryParams=" + queryParams + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
+                + ", toString()=" + super.toString() + "]";
+    }
+
     // Constructor que analiza una cadena de consulta
     public Request(String queryString) {
         this.queryParams = parseQueryString(queryString);

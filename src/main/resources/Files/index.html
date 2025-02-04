@@ -119,10 +119,46 @@
             font-size: 14px;
             color: rgba(255, 255, 255, 0.8);
         }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #9b4dca, #6a006a);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+        }
+
+        .image-wrapper {
+            margin-top: 20px; /* Espacio entre el texto y la imagen */
+            margin-bottom: 20px; /* Espacio entre la imagen y el formulario */
+        }
+
+        .image-wrapper img {
+            width: 100%; /* Ajusta el tamaño al contenedor */
+            max-width: 300px; /* Tamaño máximo de la imagen */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para la imagen */
+        }
     </style>
 </head>
     <body>
         <h1>Encuentra tus archivos en segundos</h1>
+        <div class="image-wrapper">
+            <img src="GatoIntelectual.jpg" alt="Imagen representativa de búsqueda">
+        </div>        
         <form action="/hello">
             <label for="name">Escribe el nombre del archivo que deseas visualizar: </label><br>
             <input type="text" id="name" name="name" placeholder="Ejemplo: prueba.txt"><br><br>
