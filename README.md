@@ -96,7 +96,8 @@ Las pruebas realizadas en este proyecto se enfocan en la validación y verificac
 ```
 mvn test
 ```
-![image](https://github.com/user-attachments/assets/34dddd62-fddf-4d65-8fba-e7313f300c9b)
+![image](https://github.com/user-attachments/assets/d51f5c64-3d0b-4b87-bec3-d6c058bc4675)
+
 
 ## Descripción de las pruebas
 
@@ -113,12 +114,16 @@ Comprueba que una ruta inexistente, como /api/desconocido, devuelve HTTP 404 Not
 
 Evalúa que una solicitud POST a /api/enviar con un cuerpo JSON sea procesada correctamente y responda con HTTP 200 OK y el mensaje
 
+* testHandleApiRequestHello
+Esta prueba verifica que el servidor HTTP maneje correctamente una solicitud a la ruta "/api/hello".
+
 ## Características principales: ⚙️
 
 1. Interfaz moderna y responsiva:
 
 * Un diseño minimalista con un esquema de colores que incluye degradados de tonos morados, creando una experiencia visual sofisticada.
 * Totalmente adaptable a diferentes dispositivos gracias a su diseño responsivo.
+* Panel de busqueda de archivos, el cual permite leer cualquier tipo de archivo localmente.
   
 2. Gestión de archivos: ⚙️
 
