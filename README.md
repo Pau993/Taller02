@@ -80,7 +80,8 @@ mvn clean compile
 Para ejecutar la aplicación, ejecute el siguiente comando:
 
 ```
-mvn exec:java '-Dexec.mainClass=edu.eci.arep.App'
+mvn exec:java -Dexec.mainClass="com.example.HttpServer"
+
 ```
 
 El anterior comando limpiará las contrucciones previas, compilará y empaquetará el código en un jar y luego ejecutará la aplicación.
