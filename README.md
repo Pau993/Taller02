@@ -35,10 +35,22 @@ El navegador envía varias solicitudes HTTP al servidor en el puerto 35000 para 
 * /index.html: Solicitud para cargar el archivo principal de la página web.
 * /estilos.css: Solicitud para cargar el archivo de estilos CSS.
 * /Imagen/Chill.jpg: Solicitud para obtener una imagen ubicada en una ruta específica.
+* Recursos (Archivos estáticos): Almacenados en el servidor, servidos a través de rutas específicas.
+* Comunicación: Protocolo HTTP entre el cliente y el servidor.
 
 El servidor procesa estas solicitudes y responde con los recursos correspondientes desde su sistema de archivos.
 
-![image](https://github.com/user-attachments/assets/01c7ee8a-a10d-44e3-875e-97118c608545)
+* Servidor HTTP: Clase HttpServer que maneja solicitudes HTTP.
+* Manejo de rutas: Clase Route para mapear rutas específicas a manejadores.
+* Clases de soporte:
+* Request y Response para manejar y estructurar las solicitudes y respuestas.
+* Utils con funciones auxiliares
+* Archivos estáticos: Recursos en la carpeta resources/Files (HTML, CSS, imágenes, etc.).
+* API REST: Endpoints definidos en HttpServer para manejar /api/saludo, /api/fecha, etc.
+* Pruebas: Clases de prueba con JUnit para validar el comportamiento del servidor.
+
+![image](https://github.com/user-attachments/assets/ee3336ae-1ca3-40f2-883f-e43ccb439cce)
+
 
 ## Diagrama de Clase
 
