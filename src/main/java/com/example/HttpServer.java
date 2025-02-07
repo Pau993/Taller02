@@ -142,6 +142,10 @@ public class HttpServer {
             sendResponse(out, 200, "OK", "{\"mensaje\": \"¡Hola desde el servidor!\"}");
         } else if (path.equals("/api/fecha")) {
             sendResponse(out, 200, "OK", "{\"fecha\": \"" + new Date() + "\"}");
+        } else if (path.equals("/api/hello")) {
+            sendResponse(out, 200, "OK", "{\"mensaje\\\": \\\"¡Hola desde el servidor!\\\"}");
+        } else if (path.equals("/index.html")) {
+            sendResponse(out, 200, "OK", "{\"mensaje\\\": \\\"¡Hola desde el servidor!\\\"}");
         } else {
             sendResponse(out, 404, "Not Found", "{\"error\": \"Recurso no encontrado\"}");
         }

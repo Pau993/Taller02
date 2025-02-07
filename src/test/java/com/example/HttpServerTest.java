@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -66,4 +65,14 @@ class HttpServerTest {
         assertTrue(response.contains("HTTP/1.1 200 OK"));
         assertTrue(response.contains("Datos recibidos"));
     }
+    
+    @Test
+    void testHandleApiRequestHello() {
+        HttpServer.handleApiRequest("/api/hello", writer);
+        String response = outputStream.toString();
+        assertTrue(response.contains("HTTP/1.1 200 OK"));
+    }
+
+    
 }
+
