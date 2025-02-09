@@ -1,4 +1,4 @@
-package com.example;
+package com.example.Utils;
 
 //Todo lo que reciba llegará el método
 @FunctionalInterface

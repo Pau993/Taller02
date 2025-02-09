@@ -1,4 +1,4 @@
-package com.example;
+package com.example.Utils;
 
 import java.io.*;
 import java.net.*;
@@ -11,9 +11,9 @@ import java.util.*;
  */
 
 public class HttpServer {
-    private static boolean primeraPeticion = true;
-    private static int PORT = 35000;
-    private static final String BASE_DIRECTORY = "src/main/resources/Files";
+    private static boolean primeraPeticion = true; //Revisa si la primera petición es verdadera
+    private static int PORT = 35000; // Puerto donde se inicia el programa 
+    private static final String BASE_DIRECTORY = "src/main/resources/Files"; 
     public static final Utils staticFiles = new Utils();
 
     // String que almacena la ruta de los archivos Controlador
@@ -29,7 +29,7 @@ public class HttpServer {
     }
 
     public static void run() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(PORT);
+        ServerSocket serverSocket = new ServerSocket(PORT); 
         System.out.println("Servidor iniciado en el puerto " + PORT);
 
         //Escucha simultaneamente por puerto
@@ -47,9 +47,13 @@ public class HttpServer {
      * @param clientSocket es el socket del cliente que realiza la solicitud
      */
     static void handleRequest(Socket clientSocket) {
+        // Abre un BufferedReader para leer la entrada del cliente
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            // Abre un PrintWriter para enviar exto al cliente
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            // Abre un Buffere BufferedOutputStream para enviar datos binarios al cliente
              BufferedOutputStream bos = new BufferedOutputStream(clientSocket.getOutputStream());
+             // Abre un OutputStream para enviar datos al cliente
              OutputStream dataOut = clientSocket.getOutputStream();
         ) {
             //Valor de cada invocación de BufferedReader
@@ -136,7 +140,7 @@ public class HttpServer {
      * @param path
      * @param out
      */
-    static void handleApiRequest(String path, PrintWriter out) {
+    public static void handleApiRequest(String path, PrintWriter out) {
         Arrays.toString( getParams(path));
         if (path.equals("/api/saludo")) {
             sendResponse(out, 200, "OK", "{\"mensaje\": \"¡Hola desde el servidor!\"}");
@@ -169,7 +173,7 @@ public class HttpServer {
      * @param out
      * @throws IOException
      */
-    static void handleApiPostRequest(String path, BufferedReader in, PrintWriter out) throws IOException {
+    public static void handleApiPostRequest(String path, BufferedReader in, PrintWriter out) throws IOException {
         if (path.startsWith("/api/enviar")) {
             StringBuilder body = new StringBuilder();
             String line;

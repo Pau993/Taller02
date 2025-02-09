@@ -1,4 +1,4 @@
-package com.example;
+package com.example.Utils;
 
 public class Utils {
     protected String route;

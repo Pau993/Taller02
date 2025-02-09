@@ -7,6 +7,8 @@ import java.io.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.example.Utils.HttpServer;
+
 class HttpServerTest {
 
     private ByteArrayOutputStream outputStream;
