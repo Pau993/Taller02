@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplicación Web Elegante</title>
+    <title>Aplicación Web </title>
     <link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="./css/normalize.css">
     <link rel="stylesheet" href="./css/estilos.css">
@@ -183,6 +183,7 @@
                         document.getElementById("getrespmsg").innerHTML = text;
                     }
                 }
+                //Query = consulta, porque lo que va después del ? es el query
                 xhttp.open("GET", "/hello?name=" + nameVar);
                 xhttp.responseType = 'arraybuffer'; // Set the response type to arraybuffer for binary data
                 xhttp.send();

@@ -1,24 +1,34 @@
 package com.example.Utils;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+import com.example.Anotation.GetMapping;
+import com.example.Anotation.RequestParam;
+import com.example.Anotation.RestController;
+
 
 
 /**
  *   @author Paula Paez 
  */
-
 public class HttpServer {
+    public static Map<String, Method> services = new HashMap();
     private static boolean primeraPeticion = true; //Revisa si la primera petición es verdadera
     private static int PORT = 35000; // Puerto donde se inicia el programa 
     private static final String BASE_DIRECTORY = "src/main/resources/Files"; 
     public static final Utils staticFiles = new Utils();
 
     // String que almacena la ruta de los archivos Controlador
-    // Route es una interfaz funcional que se utiliza para manejar las rutas Respuesta
-    static Map<String, Route> routes = new HashMap<>(); // Rutas registradas en el servidor
+    // Route es una interfaz funcional que se utiliza para manejar las rutas, la Respuesta
+    //static Map<String, Route> routes = new HashMap<>(); // Rutas registradas en el servidor
 
     /**
      * Constructor de la clase HttpServer
@@ -29,6 +39,7 @@ public class HttpServer {
     }
 
     public static void run() throws IOException {
+        loadComponents();
         ServerSocket serverSocket = new ServerSocket(PORT); 
         System.out.println("Servidor iniciado en el puerto " + PORT);
 
@@ -86,7 +97,6 @@ public class HttpServer {
      * @throws IOException es una excepción que se lanza si ocurre un error de entrada/salida
      */
     private static void serveStaticFile(String path, PrintWriter out, OutputStream dataOut, BufferedOutputStream bos) throws IOException {
-        System.out.println(routes.keySet().toString());
         //Se obtiene el valor de la variable almacenar
         String almacenar = URI.create(path).getQuery();
         if(almacenar != null){
@@ -94,21 +104,20 @@ public class HttpServer {
         }
         System.out.println(path);
         String filePath = BASE_DIRECTORY + (path.equals("/") ? "/index.html" : path);
-        //System.out.println(URI.create(path).getQuery().split("=")[1]);
         File file = new File(filePath);
         System.out.println(filePath);
-
-        Response response = new Response();
-        Request request = new Request(almacenar);
-        System.out.println(request.toString());
-        if (routes.containsKey(path)) {
-            Route responseString = routes.get(path);
+        
+        
+        if (services.containsKey(path)) {
+            
+            Method response = services.get(path);
             String responseValue = "";
             try {
-                 responseValue = responseString.handle(request, response).toString();
+                 responseValue = handleControllers(response, almacenar);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            System.out.println(responseValue);
             
                 out.println("HTTP/1.1 200 OK");
                 out.println("Content-Type: text/plain");
@@ -116,7 +125,7 @@ public class HttpServer {
                 out.println(responseValue);
                 out.flush();
     
-        }else if (file.exists() && !file.isDirectory() && !routes.containsKey(path)) {
+        }else if (file.exists() && !file.isDirectory() && !services.containsKey(path)) {
             String contentType = Files.probeContentType(file.toPath());
             System.out.println(contentType);
             
@@ -211,15 +220,116 @@ public class HttpServer {
         PORT = port;
     }
 
-    /**
-     * Registra una ruta en el servidor.
-     * @param path
-     * @param route
+    /** 
+     * 
+     * @param args
      */
-    public static void get(String path, Route route){
-        routes.put(path, route);
+    public static void loadComponents() {
+        File filesController = new File("03\\src\\main\\java\\com\\example\\Controller");
+        if(filesController.exists() && filesController.isDirectory()){
+            for(File doc : filesController.listFiles()){
+                if(doc.getName().endsWith(".java")){
+                    try {
+                        String nameClass = "com.example.Controller." + doc.getName().replace(".java", "");
+                        //Intenta cargar la clase especificada por el primer argumento
+                        Class c = Class.forName(nameClass);
+                        //verifica si la clase cargada esta anotada con @RestController
+                        if (!c.isAnnotationPresent(RestController.class)) {
+                            //Si no está anotada con @RestController, cierra el progama
+                            System.exit(0);
+                        }
+                        //Itera sobre los métodos declarados de la clase cargada
+                        for (Method m : c.getDeclaredMethods()) {
+                            // Verifica si el método esta anotado con @GetMapping
+                            if (m.isAnnotationPresent(GetMapping.class)) {
+                                // Recupera la anotación @GetMapping
+                                GetMapping a = m.getAnnotation(GetMapping.class);
+                                // Mapea el valor de la anotación al método en el mapa sevices
+                                services.put(a.value(), m);
+                            }
+                        }
+                        System.out.println(services.keySet().toArray().toString());
+                    } catch(Exception ex) {
+                        Logger.getLogger(HttpServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    public static Object convertToType(Class<?> type, String value) {
+        if (type == int.class || type == Integer.class) {
+            return Integer.parseInt(value);
+        } else if (type == double.class || type == Double.class) {
+            return Double.parseDouble(value);
+        } else if (type == float.class || type == Float.class) {
+            return Float.parseFloat(value);
+        } else if (type == long.class || type == Long.class) {
+            return Long.parseLong(value);
+        } else if (type == boolean.class || type == Boolean.class) {
+            return Boolean.parseBoolean(value);
+        } else {
+            return value; 
+        }
+    }
+
+    public static String handleControllers(Method serviceMethod, String query){
+        
+        if (serviceMethod != null) {
+            try {
+                Map<String, String> queryParams = parseQueryParams(query);
+                Object[] parameters = new Object[serviceMethod.getParameterCount()];
+                Class<?>[] parameterTypes = serviceMethod.getParameterTypes();
+                Annotation[][] annotations = serviceMethod.getParameterAnnotations();
+
+                for (int i = 0; i < annotations.length; i++) {
+                    for (Annotation annotation : annotations[i]) {
+                        if (annotation instanceof RequestParam) {
+                            RequestParam requestParam = (RequestParam) annotation;
+                            String paramName = requestParam.value();
+                            String paramValue = queryParams.get(paramName);
+
+                            if (paramValue == null || paramValue.isEmpty()) {
+                                parameters[i] = convertToType(parameterTypes[i], requestParam.defaultValue());
+                            } else {
+                                parameters[i] = convertToType(parameterTypes[i], paramValue);
+                            }
+                        } else {
+                            parameters[i] = null; 
+                        }
+                    }
+                }
+                String variable = serviceMethod.invoke(null, parameters).toString();
+                return (String) serviceMethod.invoke(null, parameters);
+            } 
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+
+        return "";
+                
+    }
+
+    public static Map<String, String> parseQueryParams(String query) {
+        Map<String, String> queryParams = new HashMap<>();
+        if (query != null && !query.isEmpty()) {
+            String[] pairs = query.split("&");
+            for (String pair : pairs) {
+                String[] keyValue = pair.split("=");
+                if (keyValue.length == 2) {
+                    queryParams.put(keyValue[0], keyValue[1]);
+                }
+            }
+        }
+        return queryParams;
     }
 
 }
+
 
 
